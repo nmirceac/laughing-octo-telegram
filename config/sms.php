@@ -3,29 +3,17 @@
 return [
     'router'=> [
         'includeRoutes'=>true,
-        'prefix'=>'mgtools',
-        'namedPrefix'=>'mg-tools',
-        'guestMiddleware'=>'web',
-        'authMiddleware'=>'auth'
+        'prefix'=>'smstools',
+        'namedPrefix'=>'sms-tools',
+        'webhookEndpoint'=>'webhook'
     ],
 
     'api' => [
-        'endpoint' => 'api.mailgun.net',
-        'version' => 'v3',
-        'ssl' => true
+        'endpoint' => env('SMS_API_ENDPOINT', 'https://sms.weanswer.it/api/v1/sms'),
+        'key' => env('SMS_API_KEY'),
+        'secret' => env('SMS_API_SECRET'),
+        'webhook' => env('SMS_API_WEBHOOK')
     ],
-
-    'domain' => env('MAILGUN_DOMAIN', ''),
-    'api_key' => env('MAILGUN_PRIVATE', ''),
-    'public_api_key' => env('MAILGUN_PUBLIC', ''),
-    'from' => [
-        'address' => env('MAILGUN_FROM_ADDRESS', ''),
-        'name' => env('MAILGUN_FROM_NAME', ''),
-    ],
-    'reply_to' => env('MAILGUN_REPLY_TO', ''),
-    'force_from_address' => env('MAILGUN_FORCE_FROM_ADRESS', false),
-    'catch_all' => env('MAILGUN_CATCH_ALL', ''),
-    'testmode' => env('MAILGUN_TESTMODE', false)
 
 ];
 
