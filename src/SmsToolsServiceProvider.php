@@ -11,6 +11,7 @@ class SmsToolsServiceProvider extends ServiceProvider
      */
     public function boot(\Illuminate\Routing\Router $router)
     {
+/*
         if(config('mailgun.router.includeRoutes')) {
             $router->prefix(config('mailgun.router.prefix'))
                 ->namespace('MgTools\Http\Controllers')
@@ -49,6 +50,7 @@ class SmsToolsServiceProvider extends ServiceProvider
                 ], 'migrations');
             }
         }
+*/
     }
 
     /**
@@ -58,9 +60,11 @@ class SmsToolsServiceProvider extends ServiceProvider
      */
     public function register()
     {
+*/
         $this->app->bind('mailgun.client', function() {
             return \Http\Adapter\Guzzle6\Client::createWithConfig([]);
         });
+*/
 
 //        $this->mergeConfigFrom(__DIR__.'/../config/mailgun.php', 'mailgun');
 //
