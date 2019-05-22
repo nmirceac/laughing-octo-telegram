@@ -1,4 +1,4 @@
-<?php namespace MgTools;
+<?php namespace SmsTools;
 
 use Illuminate\Support\ServiceProvider;
 
