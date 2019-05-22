@@ -60,7 +60,7 @@ class SmsToolsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-*/
+/*
         $this->app->bind('mailgun.client', function() {
             return \Http\Adapter\Guzzle6\Client::createWithConfig([]);
         });
