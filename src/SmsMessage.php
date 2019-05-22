@@ -50,7 +50,7 @@ class SmsMessage extends Model
         $message->recipient = $recipient;
         $message->save();
 
-        dispatch(new \App\Jobs\SmsMessageSendToGateway($message->id));
+        dispatch(new \SmsTools\Jobs\SendToGateway($message->id));
 
         return $message;
     }
