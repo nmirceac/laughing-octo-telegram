@@ -5,7 +5,8 @@ return [
         'includeRoutes'=>true,
         'prefix'=>'smstools',
         'namedPrefix'=>'sms-tools',
-        'webhookEndpoint'=>'webhook'
+        'webhookEndpoint'=>'webhook',
+        'middleware'=>[],
     ],
 
     'api' => [

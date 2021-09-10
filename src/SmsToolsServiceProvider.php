@@ -14,7 +14,7 @@ class SmsToolsServiceProvider extends ServiceProvider
         if(config('sms.router.includeRoutes')) {
             $router->prefix(config('sms.router.prefix'))
                 ->namespace('SmsTools\Http\Controllers')
-                ->middleware(['api'])
+                ->middleware(config('sms.router.middleware', []))
                 ->group(__DIR__.'/Http/api.php');
         }
 
