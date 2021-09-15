@@ -41,8 +41,8 @@ class SmsMessage extends Model
 
     public static function queue(int $recipient, $content)
     {
-        $message = new SmsMessage();
-        $message->content = self::cleanContent($content);
+        $message = new static();
+        $message->content = static::cleanContent($content);
         $message->recipient = $recipient;
         $message->deliveries = [];
         $message->replies = [];
@@ -129,7 +129,7 @@ class SmsMessage extends Model
     }
 
     public static function updateFromPayload($payload) {
-        $message = \App\SmsMessage::where('gateway_id', $payload['message']['id'])->first();
+        $message = static::where('gateway_id', $payload['message']['id'])->first();
         if(is_null($message)) {
             return false;
         }
@@ -150,7 +150,7 @@ class SmsMessage extends Model
     public static function processRequest()
     {
         try {
-            self::checkWebhookSignature();
+            static::checkWebhookSignature();
         } catch (\Exception $e) {
             return response()->json(['error' => [
                     'message' => 'Invalid signature - unauthorized',
@@ -168,15 +168,15 @@ class SmsMessage extends Model
                 break;
 
             case self::WEBHOOK_TYPE_MESSAGE_QUEUED :
-                return response()->json(['success'=>self::updateFromPayload($payload)]);
+                return response()->json(['success'=>static::updateFromPayload($payload)]);
                 break;
 
             case self::WEBHOOK_TYPE_DELIVERY_REPORT :
-                return response()->json(['success'=>self::updateFromPayload($payload)]);
+                return response()->json(['success'=>static::updateFromPayload($payload)]);
                 break;
 
             case self::WEBHOOK_TYPE_REPLY :
-                return response()->json(['success'=>self::updateFromPayload($payload)]);
+                return response()->json(['success'=>static::updateFromPayload($payload)]);
                 break;
 
             default:
@@ -189,7 +189,7 @@ class SmsMessage extends Model
         }
 
 
-        $message = SmsMessage::where('gateway_id', $messageInfo['id']);
+        $message = static::where('gateway_id', $messageInfo['id']);
         if(is_null($message)) {
             return response('No message');
         }
