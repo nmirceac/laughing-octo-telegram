@@ -128,7 +128,7 @@ class SmsMessage extends Model
         }
     }
 
-    public static function updateFromPayload($payload) {
+    public static function updateFromPayload($payload, $type=null) {
         $message = static::where('gateway_id', $payload['message']['id'])->first();
         if(is_null($message)) {
             return false;
@@ -144,7 +144,41 @@ class SmsMessage extends Model
         $message->delivered_at = $payload['message']['delivered_at'];
         $message->save();
 
+        self::triggerPostPayloadUpdateEvent($message, $type);
+
         return true;
+    }
+
+    public static function triggerPostPayloadUpdateEvent(\App\SmsMessage $message, $type)
+    {
+        Jobs\SmsPayloadUpdateEvent::dispatch($message->id, $type);
+    }
+
+    public static function runPostPayloadUpdateEvent(\App\SmsMessage $message, $type)
+    {
+        switch($type) {
+            case self::WEBHOOK_TYPE_MESSAGE_QUEUED :
+                if(method_exists($message, 'afterMessageQueued')) {
+                    $message->afterMessageQueued();
+                }
+                break;
+
+            case self::WEBHOOK_TYPE_DELIVERY_REPORT :
+                if(method_exists($message, 'afterMessageDelivered')) {
+                    $message->afterMessageDelivered();
+                }
+                break;
+
+            case self::WEBHOOK_TYPE_REPLY :
+                if(method_exists($message, 'afterMessageReplied')) {
+                    $replies = $message->replies;
+                    $message->afterMessageReplied(end($replies));
+                }
+                break;
+
+            default:
+                break;
+        }
     }
 
     public static function processRequest()
@@ -168,15 +202,15 @@ class SmsMessage extends Model
                 break;
 
             case self::WEBHOOK_TYPE_MESSAGE_QUEUED :
-                return response()->json(['success'=>static::updateFromPayload($payload)]);
+                return response()->json(['success'=>static::updateFromPayload($payload, $type)]);
                 break;
 
             case self::WEBHOOK_TYPE_DELIVERY_REPORT :
-                return response()->json(['success'=>static::updateFromPayload($payload)]);
+                return response()->json(['success'=>static::updateFromPayload($payload, $type)]);
                 break;
 
             case self::WEBHOOK_TYPE_REPLY :
-                return response()->json(['success'=>static::updateFromPayload($payload)]);
+                return response()->json(['success'=>static::updateFromPayload($payload, $type)]);
                 break;
 
             default:
