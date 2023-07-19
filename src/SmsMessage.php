@@ -4,10 +4,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class SmsMessage extends Model
 {
+    public $table = 'sms_messages';
+
     const WEBHOOK_TYPE_WEBHOOK_TEST=1;
     const WEBHOOK_TYPE_MESSAGE_QUEUED=2;
     const WEBHOOK_TYPE_DELIVERY_REPORT=3;
     const WEBHOOK_TYPE_REPLY=4;
+    const WEBHOOK_TYPE_INBOUND=5;
 
     public function getDeliveriesAttribute()
     {
@@ -211,6 +214,10 @@ class SmsMessage extends Model
 
             case self::WEBHOOK_TYPE_REPLY :
                 return response()->json(['success'=>static::updateFromPayload($payload, $type)]);
+                break;
+
+            case self::WEBHOOK_TYPE_INBOUND :
+                return response()->json(['success'=>\App\SmsInbound::createFromPayload($payload)]);
                 break;
 
             default:
